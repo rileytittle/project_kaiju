@@ -4,7 +4,7 @@ import { Issue } from "../models/issue.model";
 const pool = new Pool({
 	user: "postgres",
 	host: "localhost",
-	database: "Senior-Project",
+	database: "Kaiju",
 	password: "garnetisGold!1820",
 	port: 5432,
 });
@@ -14,7 +14,7 @@ let app = Router();
 app.delete("/:board_id/delete", (req, res) => {
 	try {
 		if (req.body.issue_id) {
-			let result = pool.query("DELETE FROM issues WHERE issue_id = $1", [
+			let result = pool.query("DELETE FROM issue WHERE issue_id = $1", [
 				parseInt(req.body.issue_id),
 			]);
 			res.status(200).send("Issue successfully deleted");
@@ -29,7 +29,7 @@ app.patch("/:board_id/update", (req, res) => {
 	try {
 		if (req.body.status && req.body.issue_id) {
 			let result = pool.query(
-				"UPDATE issues SET status = $1 WHERE issue_id = $2",
+				"UPDATE issue SET status = $1 WHERE issue_id = $2",
 				[req.body.status, parseInt(req.body.issue_id)]
 			);
 			res.status(200).send("Issue successfully updated");
@@ -43,7 +43,7 @@ app.patch("/:board_id/update", (req, res) => {
 app.post("/:board_id/create", async (req, res) => {
 	try {
 		let issues = await pool.query(
-			"SELECT * FROM issues WHERE title = $1 AND board_id = $2",
+			"SELECT * FROM issue WHERE title = $1 AND board_id = $2",
 			[req.body.title, parseInt(req.params.board_id)]
 		);
 		if (issues.rows.length > 0) {
@@ -60,7 +60,7 @@ app.post("/:board_id/create", async (req, res) => {
 				due_date
 			);
 			let result = await pool.query(
-				"INSERT INTO issues (title, status, date_created, due_date, board_id) VALUES ($1, $2, $3, $4, $5)",
+				"INSERT INTO issue (title, status, date_created, due_date, board_id) VALUES ($1, $2, $3, $4, $5)",
 				[
 					newIssue.title,
 					newIssue.status,
@@ -78,7 +78,7 @@ app.post("/:board_id/create", async (req, res) => {
 app.get("/:board_id", async (req, res) => {
 	try {
 		let result = await pool.query(
-			`SELECT * FROM issues WHERE board_id = $1`,
+			`SELECT * FROM issue WHERE board_id = $1`,
 			[parseInt(req.params.board_id)]
 		);
 		res.status(200).send(result.rows);

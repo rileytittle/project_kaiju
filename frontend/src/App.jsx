@@ -10,11 +10,13 @@ import {
 } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import Boards from "./pages/Boards";
+import Issues from "./pages/Issues";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path="/" element={<MainLayout />}>
 			<Route path="/boards" element={<Boards />}></Route>
+			<Route path="/boards/:id/issues" element={<Issues />}></Route>
 		</Route>
 	)
 );
