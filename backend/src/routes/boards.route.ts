@@ -12,7 +12,7 @@ let app = Router();
 
 app.get("/:title", async (req, res) => {
 	try {
-		let result = await pool.query(`SELECT * FROM boards WHERE title = $1`, [
+		let result = await pool.query(`SELECT * FROM board WHERE title = $1`, [
 			req.params.title,
 		]);
 		res.status(200).send(result.rows);
@@ -22,17 +22,17 @@ app.get("/:title", async (req, res) => {
 });
 app.get("/", async (req, res) => {
 	try {
-		let result = await pool.query("SELECT * FROM boards");
+		let result = await pool.query("SELECT * FROM board");
 		res.status(200).send(result.rows);
 	} catch (e) {
-		res.status(400).send("Error fetching boards");
+		res.status(400).send("Error fetching board");
 	}
 });
 app.post("/create", async (req, res) => {
 	if (req.body.title) {
 		try {
 			let boards = await pool.query(
-				`SELECT * FROM boards WHERE title = $1`,
+				`SELECT * FROM board WHERE title = $1`,
 				[req.body.title]
 			);
 			if (boards.rows.length > 0) {
@@ -43,7 +43,7 @@ app.post("/create", async (req, res) => {
 					new Date().toISOString().split("T")[0]
 				);
 				let result = await pool.query(
-					`INSERT INTO boards (title, date_created) VALUES ($1, $2)`,
+					`INSERT INTO board (title, date_created) VALUES ($1, $2)`,
 					[newBoard.title, newBoard.dateCreated]
 				);
 				res.status(201).send("Board created successfully");
@@ -59,7 +59,7 @@ app.patch("/edit", async (req, res) => {
 	if (req.body.title && req.body.board_id) {
 		try {
 			let result = await pool.query(
-				`UPDATE  boards SET title = $1 WHERE board_id = $2`,
+				`UPDATE  board SET title = $1 WHERE board_id = $2`,
 				[req.body.title, parseInt(req.body.board_id)]
 			);
 			res.status(200).send("Board successfully edited");
@@ -74,7 +74,7 @@ app.delete("/delete", async (req, res) => {
 	if (req.body.board_id) {
 		try {
 			let result = await pool.query(
-				`DELETE FROM boards WHERE board_id = $1`,
+				`DELETE FROM board WHERE board_id = $1`,
 				[parseInt(req.body.board_id)]
 			);
 			res.status(200).send("Board deleted successfully.");
