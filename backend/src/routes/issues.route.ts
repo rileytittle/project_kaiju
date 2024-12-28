@@ -29,7 +29,7 @@ app.patch("/:board_id/update", (req, res) => {
 	try {
 		if (req.body.status && req.body.issue_id) {
 			let result = pool.query(
-				"UPDATE issue SET status = $1 WHERE issue_id = $2",
+				"UPDATE issue SET status = $1 WHERE id = $2",
 				[req.body.status, parseInt(req.body.issue_id)]
 			);
 			res.status(200).send("Issue successfully updated");
